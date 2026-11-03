@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reportar un aumento de precio · Lank</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Manual de marca Lank: paleta #4242B2 #6666CC #F5663F #FF7555 #FFA900 #FFCD2C #EDEDED.
+   Comunicación a dueños => color principal #FFA900. Web => Poppins (Regular textos, Medium subtítulos, Bold títulos y botones).
+   Funcionales: éxito #4F9872, advertencia #FFCD2C, error #F5663F. Bordes siempre 8px, sin sombras. Íconos #353535. */
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#EDEDED;--card:#FFFFFF;--ink:#353535;--muted:#6B6B78;--line:#D9D9DE;--soft:#F6F6F6;
+  --duenos:#FFA900;--duenos-soft:#FFF3D6;--violeta:#4242B2;
+  --good:#4F9872;--good-soft:#E6F2EB;--warn:#FFCD2C;--warn-soft:#FFF8DD;--bad:#F5663F;--bad-soft:#FEEAE4;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1B1B22;--card:#26262F;--ink:#EDEDED;--muted:#B4B4C0;--line:#3D3D4A;--soft:#2F2F3A;
+  --duenos-soft:#3A3020;--good-soft:#1F3329;--warn-soft:#3A3420;--bad-soft:#3D2620;}}
+:root[data-theme="dark"]{--bg:#1B1B22;--card:#26262F;--ink:#EDEDED;--muted:#B4B4C0;--line:#3D3D4A;--soft:#2F2F3A;
+  --duenos-soft:#3A3020;--good-soft:#1F3329;--warn-soft:#3A3420;--bad-soft:#3D2620;}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Poppins,"Segoe UI",system-ui,-apple-system,sans-serif;font-weight:400;font-size:15px;line-height:1.5}
+.wrap{max-width:440px;margin:0 auto;padding:20px 16px 40px}
+.demo{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:12px}
+.card{background:var(--card);border-radius:8px;padding:22px 20px 20px;min-height:600px;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.logo{height:30px;width:auto;display:block}
+.steps{display:flex;gap:5px}
+.steps i{width:22px;height:6px;border-radius:8px;background:var(--line)}
+.steps i.on{background:var(--duenos)}
+h1{font-size:21px;line-height:1.25;margin:0 0 6px;font-weight:700}
+.sub{color:var(--muted);margin:0 0 18px;font-weight:500}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:none;border:1.5px solid var(--line);border-radius:8px;padding:13px 14px;margin-bottom:10px;color:var(--ink);font:inherit;cursor:pointer}
+.opt:hover{border-color:var(--duenos)}
+.opt.sel{border:2px solid var(--duenos);background:var(--duenos-soft);padding:12.5px 13.5px}
+.opt .dot{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--line);margin-top:3px;display:grid;place-items:center}
+.opt.sel .dot{border-color:var(--duenos)}
+.opt.sel .dot::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--duenos)}
+.opt b{display:block;font-weight:500}
+.opt small{color:var(--muted);font-size:13px}
+.opt[disabled]{opacity:.55;cursor:not-allowed}
+.note{border-radius:8px;padding:12px 14px;font-size:13.5px;margin:6px 0 14px;background:var(--soft);color:var(--muted)}
+.note.good{background:var(--good-soft);color:var(--ink);border-left:4px solid var(--good)}
+.note.warn{background:var(--warn-soft);color:var(--ink);border-left:4px solid var(--warn)}
+.note.bad{background:var(--bad-soft);color:var(--ink);border-left:4px solid var(--bad)}
+.note a{color:inherit;font-weight:700}
+label.f{display:block;font-size:13px;font-weight:500;color:var(--muted);margin:14px 0 6px}
+input[type=text],input[type=email],input[type=number],input[type=date],input[type=url],textarea{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:11px 12px}
+textarea{min-height:70px;resize:vertical}
+input:focus,textarea:focus{outline:none;border-color:var(--duenos);box-shadow:0 0 0 2px var(--duenos-soft)}
+button:focus-visible{outline:2px solid var(--violeta);outline-offset:2px}
+.ro{background:var(--soft);border:1.5px solid var(--line);border-radius:8px;padding:11px 12px;display:flex;justify-content:space-between;gap:8px}
+.ro span{color:var(--muted);font-size:12.5px;align-self:center}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.var{display:inline-block;font-size:13px;font-weight:500;margin-top:8px;padding:5px 10px;border-radius:8px;color:var(--ink)}
+.var.good{background:var(--good-soft);border-left:4px solid var(--good)}
+.var.warn{background:var(--warn-soft);border-left:4px solid var(--warn)}
+.var.bad{background:var(--bad-soft);border-left:4px solid var(--bad)}
+.tabs{display:grid;grid-template-columns:repeat(2,1fr);border:1.5px solid var(--line);border-radius:8px;padding:3px;margin-bottom:14px}
+.tabs button{font:inherit;font-size:13px;font-weight:500;border:0;background:none;color:var(--muted);padding:9px 4px;border-radius:8px;cursor:pointer}
+.tabs button.on{background:var(--duenos-soft);color:var(--ink);font-weight:700}
+.chip{display:inline-block;background:var(--good-soft);color:var(--ink);font-size:12.5px;font-weight:500;border-radius:8px;padding:4px 10px;margin-bottom:14px;border-left:4px solid var(--good)}
+.check{display:flex;gap:10px;align-items:flex-start;margin:16px 0 4px;font-size:13.5px;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--duenos);margin-top:2px;flex:none}
+.spacer{flex:1}
+.btn{width:100%;font:inherit;font-weight:700;font-size:15.5px;border:0;border-radius:8px;padding:14px;background:var(--duenos);color:#353535;cursor:pointer;margin-top:18px}
+.btn:hover{filter:brightness(.97)}
+.btn[disabled]{background:var(--line);color:var(--muted);cursor:not-allowed;filter:none}
+.link{background:none;border:0;color:var(--muted);font:inherit;font-size:13.5px;text-decoration:underline;cursor:pointer;margin-top:12px;align-self:center}
+.err{color:var(--bad);font-size:13px;font-weight:500;margin-top:6px}
+.hint{color:var(--muted);font-size:12.5px;margin-top:6px}
+.done{text-align:center;padding-top:24px}
+.done .ic{width:76px;height:76px;border-radius:50%;background:var(--good-soft);color:var(--good);display:grid;place-items:center;font-size:36px;font-weight:700;margin:0 auto 18px}
+.track{display:flex;justify-content:space-between;position:relative;margin:28px 6px 8px}
+.track::before{content:"";position:absolute;left:8%;right:8%;top:8px;height:2px;background:var(--line)}
+.track div{position:relative;text-align:center;font-size:12.5px;color:var(--muted);width:33%}
+.track div::before{content:"";display:block;width:18px;height:18px;border-radius:50%;margin:0 auto 6px;background:var(--card);border:2px solid var(--line)}
+.track div.on{color:var(--ink);font-weight:700}
+.track div.on::before{background:var(--duenos);border-color:var(--duenos)}
+
+select{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:11px 12px}
+select:focus{outline:none;border-color:var(--duenos);box-shadow:0 0 0 2px var(--duenos-soft)}
+select:disabled{opacity:.6}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.foot{max-width:440px;margin:14px auto 0;font-size:12px;color:var(--muted);text-align:center;padding:0 16px}
+
+@media (prefers-reduced-motion:no-preference){.card>*{animation:in .22s ease-out}@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1}}}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card" id="app"></div></div>
+<p class="foot">Lank toma como referencia el precio oficial de cada plataforma contratando directo.</p>
+<script>
+const SB_URL='https://seycgghccgzrxgcbpdnf.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNleWNnZ2hjY2d6cnhnY2JwZG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MzI5OTIsImV4cCI6MjA4NDUwODk5Mn0.CwXWE2RHq-mICsTokEVrBouian5zib0FSOiLIjzfBC0';
+const BUCKET='capturas-cambio-precio';
+const LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKUAAABACAMAAABMfEfZAAAASFBMVEUAAAD0ZT78a0L+qgH4aFj5a0T1a0X/ExP6dib9sRP+/AK/Pz37tSP8tBl/fwDzqlj79fz72WT1Zz60al/nqaP60qe/fz+4uBUguh1/AAAAGHRSTlMA/vj8E5plAQgRAgRgnQINAhFSBAQMBANclXAdAAAFFklEQVR42u2a2XrjIAxGCRGLyWJnaef933RA2DEIgWmS6fSifL1oYhMd/4CQhIX4v82AmZsDU79tAq3WpsGJH9m0TJsW43cqaSCRqCWmkru1SSXgGynBa7RLFIIfSplYb9r+OZT6l/KX8pfyl/LnUdphGNwzlA6sBd+sHVsb2roHYgf/d7CfZYc2ZQQcvkp5g2Ib3gh4ig6un3IUl+PxOEbYXspIBFrHGEprRGhwOsAH0/qadrDQSTmI4z60I6rZSem/vmuVxU/SB3rxSuWhgO2QCNyg/DNDBkzXSemnFGCIt0sb2r0LLiYNNIrvINbgsE45iGG/tEunliAmTS0+7GpGTogPxXZQIKzZoLQJpBezi9IEXXaVhmY/iQsRIBsd9LJ+a5TOfKyQ+1MXZYhVqzbRrFeHKNnuoKaoZoXSWXFKKLvW+BZkxIR+SDSDmBXKIYPsGnETov6tlmJuQ6KdOiWB3Hd4olsPZDroBkbZ8ViIxFIODx+0TMthizKsg92uC3NeuND7WMawlAXk3W76S8uNHudjFiX8rtnVAe9nKC+pDwptxF21SVkKk+wkdGoai7uvkpUOxRwxJeUgRgIZZ1KLshAmOHEfEYkRws5CFwSga82/f3TQpIOHsgWlo0oOHTGRJVJ6k2Nc9xh4ELMgzoX4UsPaQRJThubjQ+bNE8gWZZAyv4rBgjPCnEPMQK7qsNbI7+mlgw8y6f3BLeRaWuKDjuKyHasTYaS6P3bg8AzEbFi2xFfGQUw2WknXz2rddx8KyKEjozDZxUgh6hPCizNmIGGLqd+Pth4GwmoiPiiBbFIWwggaVSh6Q8ah88eC7Aelckn/MDcYb75NaYkwlyJxAQNUnITSy+NaGYRM1jgDOSWzq0FJhcmHb6k/pmbvlixay1QCU4+53B4WPPXmwoknKIOjEcWQV8x2UO5SSi/lifdB25QqRzB8mZQzy6sP+Rx63O4Hn7jzUw7ZoDRkFrGpBryFUk10VpIZ3dJSpJSMlH7qfInyXKUsvJAZxDMjrt5CaSsjfmm5oa/My2dG3PRRhoCKxELT8NyIP7N6uimLNX7sXeOHfGcBJr209JZnKf3/l33DFb3m1e/yLZS4fgrMP1VKrPtho5QSNnbIVyhxzAc2TGe1rC0NxigZ8JcoOcwPZ1nKEOgubaIxEUZmohXKv0LpP7rSHRmWMkmmFByo0OkYiLOhWfCLlGHi17xmtU6F2QAVOiQIEA6zQ0ZBKzMvUvqVS6P10yJLnVIV2bick604bVWZ7L6oJZhaUtGo+QGdeLFMirNWK6YS8DKlcGZiMRuUXsybrFYN2JpWFm8+QelHeKRu0zUpUUyuTCQr5ap3UHrpCu9u25SqcDYc8nsps5L6nAA1KaNzULJdiVwx30NZVN2O7RGP9YdmzdS7+rdTJqcofF2dq56aFqZMa6qblMZTym1KkW9CYosy5oXQ8vzwDyjzovWmliumrECa91EmUWPm3Y/blAHz5gR3xiRjla1FaWma1J6XhzWQWb376cPSd7O4psUniBs54MNwxIfBBpKzRsBa4vpR0LM/mNKTSTCZ9SwZWBP06NbDMW2z2ZgDTZCdfYYdfcRyn45HtloHav/xir2uGvj36q7L72IiBdf58xWo7mNQ8xTjsJ6z+PhyXzCx2MDDXC6rNJX/K9cbt589aXjV4DynBYdWW4t72Zn8ekLvlrDZnOPx3PyqouVfP/TmZoN4Hexhvr14ZvwBfCXiLxGyQeQHC1ONAAAAAElFTkSuQmCC';
+(function(){const l=document.createElement('link');l.rel='icon';l.href=LOGO;document.head.appendChild(l)})();
+const PAISES={ar:{n:'Argentina',m:'ARS',dec:false},cl:{n:'Chile',m:'CLP',dec:false},mx:{n:'México',m:'MXN',dec:true},pe:{n:'Perú',m:'PEN',dec:true}};
+const S={paso:0,motivo:null,email:'',pais:'',lista:{},cargando:false,errLista:'',plat:null,precio:'',fecha:'',archivo:null,link:'',comentario:'',confirmo:false,enviando:false,error:'',hp:''};
+const app=document.getElementById('app');
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const emailOk=e=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((e||'').trim());
+const fmt=(n,p)=>PAISES[p].m+' '+Number(n).toLocaleString('es-AR',{maximumFractionDigits:2});
+function enc(n){return '<div class="top"><img class="logo" alt="Lank" src="'+LOGO+'"><span class="steps" aria-label="Paso '+n+' de 3">'+[1,2,3].map(i=>'<i class="'+(i<=n?'on':'')+'"></i>').join('')+'</span></div>'}
+function go(p){S.paso=p;S.error='';render();window.scrollTo(0,0)}
+function uuid(){return (window.crypto&&crypto.randomUUID)?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16)})}
+
+async function sb(path,opts){
+  const r=await fetch(SB_URL+path,Object.assign({},opts,{headers:Object.assign({apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},opts&&opts.headers||{})}));
+  const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){j=t}
+  if(!r.ok){throw {status:r.status,body:j}}
+  return j;
+}
+const rpc=(fn,body)=>sb('/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+
+async function cargarLista(p){
+  if(S.lista[p]){return}
+  S.cargando=true;S.errLista='';render();
+  try{
+    const rows=await rpc('plataformas_para_formulario',{p_pais:p});
+    S.lista[p]=rows.filter(r=>Number(r.precio_original)>0).sort((a,b)=>String(a.plataforma).localeCompare(String(b.plataforma),'es'));
+  }catch(e){S.errLista='No pudimos cargar las plataformas. Probá de nuevo en un momento.'}
+  S.cargando=false;
+  if(S.paso===1)render();
+}
+
+function pasoMotivo(){
+  const ops=[['oficial','Subió el precio oficial',''],['impuestos','Impuestos o tipo de cambio','Por ejemplo, pago en dólares'],['plan','Cambié de plan','Te mostramos cómo cambiarlo']];
+  let msg='';
+  if(S.motivo==='plan')msg='<div class="note">Esto no es un aumento de la plataforma. Escribinos por el chat de soporte de Lank y te ayudamos a cambiar el plan de tu grupo.</div>';
+  if(S.motivo==='impuestos')msg='<div class="note">Vamos a revisar si el cambio viene de impuestos o del tipo de cambio. En el paso de datos, sumá la captura del cobro.</div>';
+  app.innerHTML=enc(1)+'<h1>Reportar un aumento de precio</h1><p class="sub">¿Qué pasó?</p>'+
+    ops.map(o=>'<button class="opt '+(S.motivo===o[0]?'sel':'')+'" data-m="'+o[0]+'"><span class="dot"></span><span><b>'+o[1]+'</b>'+(o[2]?'<small>'+o[2]+'</small>':'')+'</span></button>').join('')+
+    msg+'<div class="note">Lank toma como referencia el precio oficial contratando directo en la web de la plataforma.</div><div class="spacer"></div><button class="btn" id="next" '+((S.motivo==='oficial'||S.motivo==='impuestos')?'':'disabled')+'>Continuar</button>';
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{S.motivo=b.dataset.m;render()});
+  document.getElementById('next').onclick=()=>go(1);
+}
+
+function pasoPlataforma(){
+  const lista=S.lista[S.pais]||[];
+  const ok=emailOk(S.email)&&S.pais&&S.plat;
+  app.innerHTML=enc(2)+'<h1>¿De qué plataforma?</h1><p class="sub">Elegí el plan que te cobra de más.</p>'+
+    '<label class="f" for="em">Tu email de Lank</label><input id="em" type="email" inputmode="email" autocomplete="email" value="'+esc(S.email)+'" placeholder="tu@email.com">'+
+    '<label class="f" for="pa">País</label><select id="pa"><option value="">Elegí tu país</option>'+Object.keys(PAISES).map(k=>'<option value="'+k+'" '+(S.pais===k?'selected':'')+'>'+PAISES[k].n+'</option>').join('')+'</select>'+
+    '<label class="f" for="pl">Plataforma y plan</label><select id="pl" '+((!S.pais||S.cargando)?'disabled':'')+'><option value="">'+(S.cargando?'Cargando…':(S.pais?'Elegí la plataforma':'Primero elegí el país'))+'</option>'+
+      lista.map(p=>'<option value="'+esc(p.id)+'" '+(S.plat&&S.plat.id===p.id?'selected':'')+'>'+esc(p.plataforma)+'</option>').join('')+'</select>'+
+    (S.errLista?'<div class="err">'+esc(S.errLista)+'</div>':'')+
+    '<div class="spacer"></div><button class="btn" id="next" '+(ok?'':'disabled')+'>Continuar</button><button class="link" id="back">Volver</button>';
+  const em=document.getElementById('em');em.oninput=()=>{S.email=em.value;document.getElementById('next').disabled=!(emailOk(S.email)&&S.pais&&S.plat)};
+  document.getElementById('pa').onchange=e=>{S.pais=e.target.value;S.plat=null;S.precio='';if(S.pais)cargarLista(S.pais);else render()};
+  document.getElementById('pl').onchange=e=>{S.plat=(S.lista[S.pais]||[]).find(p=>String(p.id)===e.target.value)||null;document.getElementById('next').disabled=!(emailOk(S.email)&&S.pais&&S.plat)};
+  document.getElementById('next').onclick=()=>go(2);
+  document.getElementById('back').onclick=()=>go(0);
+}
+
+function limpiarDec(v){let o='',sep=false;for(const ch of v){if(/\d/.test(ch))o+=ch;else if((ch==='.'||ch===',')&&!sep){o+=ch;sep=true}}return o}
+function dias(d){const h=new Date();h.setHours(0,0,0,0);return Math.round((new Date(d+'T00:00:00')-h)/864e5)}
+function calc(){
+  const P=PAISES[S.pais];
+  const pr=parseFloat(String(S.precio).replace(',','.'));
+  let estado='vacio',txt='';
+  if(S.pais!=='ar'&&pr>0){
+    const v=(pr/Number(S.plat.precio_original)-1)*100,t=(v>0?'+':'')+v.toFixed(1).replace('.',',')+'%';
+    if(v<-30){estado='coment';txt=['warn',t+' · una baja grande, contanos qué pasó']}
+    else if(v<=60){estado='ok';txt=['good',t+' · dentro del rango normal']}
+    else if(v<=150){estado='coment';txt=['warn',t+' · es un salto grande, agregá un comentario']}
+    else{estado='rechazo';txt=['bad',t+' · demasiado alto, revisá el monto y la moneda']}
+  }
+  const fd=S.fecha?dias(S.fecha):null,fechaOk=fd===null||(fd>=-60&&fd<=90);
+  const linkOk=!S.link||/^https?:\/\/\S+\.\S+/.test(S.link);
+  const ok=pr>0&&estado!=='rechazo'&&(estado!=='coment'||S.comentario.trim().length>4)&&fechaOk&&linkOk&&!!S.archivo&&S.confirmo&&!S.enviando;
+  return{pr,estado,txt,fechaOk,linkOk,ok,P};
+}
+function pasoDatos(){
+  const c=calc(),P=c.P;
+  app.innerHTML=enc(3)+'<h1>Datos del aumento</h1><p class="sub">Contanos cuánto pasó a cobrar la plataforma.</p>'+
+    '<label class="f">Plan</label><div class="ro">'+esc(S.plat.plataforma)+' · '+P.n+'</div>'+
+    (S.pais!=='ar'?'<label class="f">Precio de plataforma registrado en Lank</label><div class="ro">'+fmt(S.plat.precio_original,S.pais)+'<span>no editable</span></div>':'')+
+    '<label class="f" for="pr">Precio nuevo de la plataforma ('+P.m+')</label><input id="pr" type="text" inputmode="'+(P.dec?'decimal':'numeric')+'" value="'+esc(S.precio)+'" placeholder="'+(P.dec?'Ej: 199,50':'Ej: 6299')+'">'+
+    (c.txt?'<div class="var '+c.txt[0]+'">'+esc(c.txt[1])+'</div>':'')+
+    (c.estado==='coment'?'<label class="f" for="co">Comentario</label><textarea id="co" placeholder="¿De dónde sale este precio?">'+esc(S.comentario)+'</textarea>':'')+
+    '<div class="row"><div><label class="f" for="fe">Fecha del aumento (opcional)</label><input id="fe" type="date" value="'+esc(S.fecha)+'"></div>'+
+    '<div><label class="f" for="ca">Captura</label><input id="ca" type="file" accept="image/*,application/pdf" style="font-size:12px;max-width:100%"></div></div>'+
+    (S.fecha&&!c.fechaOk?'<div class="err">La fecha tiene que estar entre 60 días atrás y 90 días adelante.</div>':'')+
+    (S.archivo?'<div class="hint">✓ '+esc(S.archivo.name)+'</div>':'<div class="hint">Una captura de pantalla donde se vea el nuevo precio (máx. 5 MB).</div>')+
+    '<label class="f" for="li">Link a la fuente oficial (opcional)</label><input id="li" type="text" inputmode="url" value="'+esc(S.link)+'" placeholder="https://">'+
+    (S.link&&!c.linkOk?'<div class="err">El link tiene que empezar con https://</div>':'')+
+    '<div class="hp" aria-hidden="true"><label>No completar<input id="hp" tabindex="-1" autocomplete="off" value=""></label></div>'+
+    '<label class="check"><input type="checkbox" id="cf" '+(S.confirmo?'checked':'')+'><span>Confirmo que es el precio oficial de la plataforma, contratando directo en su web, y no de un intermediario.</span></label>'+
+    (S.error?'<div class="err">'+esc(S.error)+'</div>':'')+
+    '<div class="spacer"></div><button class="btn" id="next" '+(c.ok?'':'disabled')+'>'+(S.enviando?'Enviando…':'Enviar reporte')+'</button><button class="link" id="back">Volver</button>';
+  const keep=(id,fn)=>{const el=document.getElementById(id);if(!el)return;el.oninput=()=>{const prev=calc().estado;fn(el.value);const now=calc().estado;if(prev!==now||id==='pr'||id==='li'){const pos=el.selectionStart;render();const n=document.getElementById(id);if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}}else{document.getElementById('next').disabled=!calc().ok}}};
+  keep('pr',v=>{S.precio=P.dec?limpiarDec(v):v.replace(/[^0-9]/g,'')});
+  keep('co',v=>{S.comentario=v});
+  keep('li',v=>{S.link=v.trim()});
+  const fe=document.getElementById('fe');if(fe)fe.onchange=()=>{S.fecha=fe.value;render()};
+  const ca=document.getElementById('ca');if(ca)ca.onchange=()=>{const f=ca.files[0];if(f&&f.size>5242880){S.archivo=null;S.error='La captura pesa más de 5 MB. Probá con una más liviana.';}else{S.archivo=f||null;S.error=''}render()};
+  document.getElementById('hp').oninput=e=>{S.hp=e.target.value};
+  document.getElementById('cf').onchange=e=>{S.confirmo=e.target.checked;render()};
+  document.getElementById('next').onclick=enviar;
+  document.getElementById('back').onclick=()=>go(1);
+}
+
+function mensajeError(e){
+  const b=e&&e.body,m=(b&&(b.message||b.error||''))+'',cod=b&&b.code;
+  if(cod==='23505'||/duplicate key/i.test(m))return 'Ya tenés un pedido pendiente para esta plataforma con este email. Lo estamos revisando.';
+  if(/precio_fuera_de_rango/.test(m))return 'El precio nuevo es demasiado alto respecto del registrado. Revisá el monto y la moneda.';
+  if(/fecha_fuera_de_rango/.test(m))return 'La fecha del aumento está fuera del rango permitido.';
+  if(/email_invalido/.test(m))return 'Revisá el email.';
+  return 'No pudimos enviar tu reporte. Probá de nuevo en un momento.';
+}
+async function enviar(){
+  const c=calc();if(!c.ok)return;
+  if(S.hp){S.paso=3;render();return}
+  S.enviando=true;S.error='';render();
+  try{
+    const ext=((S.archivo.name.split('.').pop()||'bin').toLowerCase().replace(/[^a-z0-9]/g,'')||'bin').slice(0,5);
+    const path=S.pais+'/'+uuid()+'.'+ext;
+    await sb('/storage/v1/object/'+BUCKET+'/'+path,{method:'POST',headers:{'Content-Type':S.archivo.type||'application/octet-stream','x-upsert':'false'},body:S.archivo});
+    await rpc('crear_solicitud_cambio_precio',{
+      p_email:S.email.trim(),p_plataforma_id:S.plat.id,p_motivo:S.motivo==='impuestos'?'impuestos_tipo_cambio':'precio_oficial',
+      p_precio_nuevo:c.pr,p_fecha_aumento:S.fecha||null,p_captura_url:path,p_fuente_url:S.link||null,p_comentario:S.comentario.trim()||null});
+    S.enviando=false;S.paso=3;render();window.scrollTo(0,0);
+  }catch(e){S.enviando=false;S.error=mensajeError(e);render()}
+}
+
+function pasoListo(){
+  app.innerHTML=enc(3)+'<div class="done"><div class="ic">✓</div><h1>¡Gracias! Recibimos tu reporte</h1><p class="sub">Vamos a revisar el aumento de '+esc(S.plat?S.plat.plataforma:'tu plataforma')+'.</p></div>'+
+    '<div class="track"><div class="on">Recibido</div><div>En revisión</div><div>Resuelto</div></div>'+
+    '<div class="note" style="text-align:center;margin-top:18px">Te avisamos por email'+(S.email?' a '+esc(S.email.trim()):'')+' cuando el pedido se resuelva.</div>'+
+    '<div class="spacer"></div><button class="btn" id="next">Reportar otro</button>';
+  document.getElementById('next').onclick=()=>{const l=S.lista;Object.assign(S,{paso:0,motivo:null,plat:null,precio:'',fecha:'',archivo:null,link:'',comentario:'',confirmo:false,error:'',hp:'',lista:l});render()};
+}
+function render(){[pasoMotivo,pasoPlataforma,pasoDatos,pasoListo][S.paso]()}
+render();
+</script>
+</body>
+</html>
