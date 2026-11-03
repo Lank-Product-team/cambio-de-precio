@@ -95,9 +95,7 @@ select:disabled{opacity:.6}
 <div class="wrap"><div class="card" id="app"></div></div>
 <p class="foot">Lank toma como referencia el precio oficial de cada plataforma contratando directo.</p>
 <script>
-const SB_URL='https://seycgghccgzrxgcbpdnf.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNleWNnZ2hjY2d6cnhnY2JwZG5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MzI5OTIsImV4cCI6MjA4NDUwODk5Mn0.CwXWE2RHq-mICsTokEVrBouian5zib0FSOiLIjzfBC0';
-const BUCKET='capturas-cambio-precio';
+const API='https://seycgghccgzrxgcbpdnf.supabase.co/functions/v1/quick-processor';
 const LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKUAAABACAMAAABMfEfZAAAASFBMVEUAAAD0ZT78a0L+qgH4aFj5a0T1a0X/ExP6dib9sRP+/AK/Pz37tSP8tBl/fwDzqlj79fz72WT1Zz60al/nqaP60qe/fz+4uBUguh1/AAAAGHRSTlMA/vj8E5plAQgRAgRgnQINAhFSBAQMBANclXAdAAAFFklEQVR42u2a2XrjIAxGCRGLyWJnaef933RA2DEIgWmS6fSifL1oYhMd/4CQhIX4v82AmZsDU79tAq3WpsGJH9m0TJsW43cqaSCRqCWmkru1SSXgGynBa7RLFIIfSplYb9r+OZT6l/KX8pfyl/LnUdphGNwzlA6sBd+sHVsb2roHYgf/d7CfZYc2ZQQcvkp5g2Ib3gh4ig6un3IUl+PxOEbYXspIBFrHGEprRGhwOsAH0/qadrDQSTmI4z60I6rZSem/vmuVxU/SB3rxSuWhgO2QCNyg/DNDBkzXSemnFGCIt0sb2r0LLiYNNIrvINbgsE45iGG/tEunliAmTS0+7GpGTogPxXZQIKzZoLQJpBezi9IEXXaVhmY/iQsRIBsd9LJ+a5TOfKyQ+1MXZYhVqzbRrFeHKNnuoKaoZoXSWXFKKLvW+BZkxIR+SDSDmBXKIYPsGnETov6tlmJuQ6KdOiWB3Hd4olsPZDroBkbZ8ViIxFIODx+0TMthizKsg92uC3NeuND7WMawlAXk3W76S8uNHudjFiX8rtnVAe9nKC+pDwptxF21SVkKk+wkdGoai7uvkpUOxRwxJeUgRgIZZ1KLshAmOHEfEYkRws5CFwSga82/f3TQpIOHsgWlo0oOHTGRJVJ6k2Nc9xh4ELMgzoX4UsPaQRJThubjQ+bNE8gWZZAyv4rBgjPCnEPMQK7qsNbI7+mlgw8y6f3BLeRaWuKDjuKyHasTYaS6P3bg8AzEbFi2xFfGQUw2WknXz2rddx8KyKEjozDZxUgh6hPCizNmIGGLqd+Pth4GwmoiPiiBbFIWwggaVSh6Q8ah88eC7Aelckn/MDcYb75NaYkwlyJxAQNUnITSy+NaGYRM1jgDOSWzq0FJhcmHb6k/pmbvlixay1QCU4+53B4WPPXmwoknKIOjEcWQV8x2UO5SSi/lifdB25QqRzB8mZQzy6sP+Rx63O4Hn7jzUw7ZoDRkFrGpBryFUk10VpIZ3dJSpJSMlH7qfInyXKUsvJAZxDMjrt5CaSsjfmm5oa/My2dG3PRRhoCKxELT8NyIP7N6uimLNX7sXeOHfGcBJr209JZnKf3/l33DFb3m1e/yLZS4fgrMP1VKrPtho5QSNnbIVyhxzAc2TGe1rC0NxigZ8JcoOcwPZ1nKEOgubaIxEUZmohXKv0LpP7rSHRmWMkmmFByo0OkYiLOhWfCLlGHi17xmtU6F2QAVOiQIEA6zQ0ZBKzMvUvqVS6P10yJLnVIV2bick604bVWZ7L6oJZhaUtGo+QGdeLFMirNWK6YS8DKlcGZiMRuUXsybrFYN2JpWFm8+QelHeKRu0zUpUUyuTCQr5ap3UHrpCu9u25SqcDYc8nsps5L6nAA1KaNzULJdiVwx30NZVN2O7RGP9YdmzdS7+rdTJqcofF2dq56aFqZMa6qblMZTym1KkW9CYosy5oXQ8vzwDyjzovWmliumrECa91EmUWPm3Y/blAHz5gR3xiRjla1FaWma1J6XhzWQWb376cPSd7O4psUniBs54MNwxIfBBpKzRsBa4vpR0LM/mNKTSTCZ9SwZWBP06NbDMW2z2ZgDTZCdfYYdfcRyn45HtloHav/xir2uGvj36q7L72IiBdf58xWo7mNQ8xTjsJ6z+PhyXzCx2MDDXC6rNJX/K9cbt589aXjV4DynBYdWW4t72Zn8ekLvlrDZnOPx3PyqouVfP/TmZoN4Hexhvr14ZvwBfCXiLxGyQeQHC1ONAAAAAElFTkSuQmCC';
 (function(){const l=document.createElement('link');l.rel='icon';l.href=LOGO;document.head.appendChild(l)})();
 const PAISES={ar:{n:'Argentina',m:'ARS',dec:false},cl:{n:'Chile',m:'CLP',dec:false},mx:{n:'México',m:'MXN',dec:true},pe:{n:'Perú',m:'PEN',dec:true}};
@@ -110,19 +108,18 @@ function enc(n){return '<div class="top"><img class="logo" alt="Lank" src="'+LOG
 function go(p){S.paso=p;S.error='';render();window.scrollTo(0,0)}
 function uuid(){return (window.crypto&&crypto.randomUUID)?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16)})}
 
-async function sb(path,opts){
-  const r=await fetch(SB_URL+path,Object.assign({},opts,{headers:Object.assign({apikey:SB_KEY,Authorization:'Bearer '+SB_KEY},opts&&opts.headers||{})}));
+async function api(qs,opts){
+  const r=await fetch(API+(qs||''),opts);
   const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){j=t}
   if(!r.ok){throw {status:r.status,body:j}}
   return j;
 }
-const rpc=(fn,body)=>sb('/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 
 async function cargarLista(p){
   if(S.lista[p]){return}
   S.cargando=true;S.errLista='';render();
   try{
-    const rows=await rpc('plataformas_para_formulario',{p_pais:p});
+    const rows=await api('?pais='+p);
     S.lista[p]=rows.filter(r=>Number(r.precio_original)>0).sort((a,b)=>String(a.plataforma).localeCompare(String(b.plataforma),'es'));
   }catch(e){S.errLista='No pudimos cargar las plataformas. Probá de nuevo en un momento.'}
   S.cargando=false;
@@ -207,24 +204,29 @@ function pasoDatos(){
 }
 
 function mensajeError(e){
-  const b=e&&e.body,m=(b&&(b.message||b.error||''))+'',cod=b&&b.code;
-  if(cod==='23505'||/duplicate key/i.test(m))return 'Ya tenés un pedido pendiente para esta plataforma con este email. Lo estamos revisando.';
-  if(/precio_fuera_de_rango/.test(m))return 'El precio nuevo es demasiado alto respecto del registrado. Revisá el monto y la moneda.';
-  if(/fecha_fuera_de_rango/.test(m))return 'La fecha del aumento está fuera del rango permitido.';
-  if(/email_invalido/.test(m))return 'Revisá el email.';
-  return 'No pudimos enviar tu reporte. Probá de nuevo en un momento.';
+  const b=e&&e.body,c=(b&&b.error)||'';
+  const m={duplicado:'Ya tenés un pedido pendiente para esta plataforma con este email. Lo estamos revisando.',
+    precio_fuera_de_rango:'El precio nuevo es demasiado alto respecto del registrado. Revisá el monto y la moneda.',
+    fecha_fuera_de_rango:'La fecha del aumento está fuera del rango permitido.',
+    email_invalido:'Revisá el email.',
+    demasiados_reportes:'Llegaste al máximo de reportes por hoy. Probá de nuevo mañana.',
+    comentario_requerido:'Agregá un comentario contando de dónde sale el precio.',
+    captura_invalida:'La captura tiene que ser una imagen (PNG, JPG o WebP) o un PDF de hasta 5 MB.',
+    link_invalido:'El link tiene que empezar con https://'};
+  return m[c]||'No pudimos enviar tu reporte. Probá de nuevo en un momento.';
 }
 async function enviar(){
   const c=calc();if(!c.ok)return;
   if(S.hp){S.paso=3;render();return}
   S.enviando=true;S.error='';render();
   try{
-    const ext=((S.archivo.name.split('.').pop()||'bin').toLowerCase().replace(/[^a-z0-9]/g,'')||'bin').slice(0,5);
-    const path=S.pais+'/'+uuid()+'.'+ext;
-    await sb('/storage/v1/object/'+BUCKET+'/'+path,{method:'POST',headers:{'Content-Type':S.archivo.type||'application/octet-stream','x-upsert':'false'},body:S.archivo});
-    await rpc('crear_solicitud_cambio_precio',{
-      p_email:S.email.trim(),p_plataforma_id:S.plat.id,p_motivo:S.motivo==='impuestos'?'impuestos_tipo_cambio':'precio_oficial',
-      p_precio_nuevo:c.pr,p_fecha_aumento:S.fecha||null,p_captura_url:path,p_fuente_url:S.link||null,p_comentario:S.comentario.trim()||null});
+    const f=new FormData();
+    f.set('email',S.email.trim());f.set('plataforma_id',S.plat.id);
+    f.set('motivo',S.motivo==='impuestos'?'impuestos_tipo_cambio':'precio_oficial');
+    f.set('precio_nuevo',String(c.pr));f.set('fecha_aumento',S.fecha||'');
+    f.set('fuente_url',S.link||'');f.set('comentario',S.comentario.trim());
+    f.set('captura',S.archivo);
+    await api('',{method:'POST',body:f});
     S.enviando=false;S.paso=3;render();window.scrollTo(0,0);
   }catch(e){S.enviando=false;S.error=mensajeError(e);render()}
 }
