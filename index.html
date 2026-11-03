@@ -88,6 +88,12 @@ select:disabled{opacity:.6}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .foot{max-width:440px;margin:14px auto 0;font-size:12px;color:var(--muted);text-align:center;padding:0 16px}
 
+.paises{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pais{display:flex;align-items:center;gap:10px;background:none;border:1.5px solid var(--line);border-radius:8px;padding:11px 12px;color:var(--ink);font:inherit;font-weight:500;cursor:pointer;text-align:left}
+.pais:hover{border-color:var(--duenos)}
+.pais.sel{border:2px solid var(--duenos);background:var(--duenos-soft);padding:10.5px 11.5px}
+.flag{flex:none;border:1px solid rgba(0,0,0,.18);border-radius:2px}
+.bd{display:flex;align-items:center;gap:8px}
 @media (prefers-reduced-motion:no-preference){.card>*{animation:in .22s ease-out}@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1}}}
 </style>
 </head>
@@ -99,7 +105,12 @@ const API='https://seycgghccgzrxgcbpdnf.supabase.co/functions/v1/quick-processor
 const LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKUAAABACAMAAABMfEfZAAAASFBMVEUAAAD0ZT78a0L+qgH4aFj5a0T1a0X/ExP6dib9sRP+/AK/Pz37tSP8tBl/fwDzqlj79fz72WT1Zz60al/nqaP60qe/fz+4uBUguh1/AAAAGHRSTlMA/vj8E5plAQgRAgRgnQINAhFSBAQMBANclXAdAAAFFklEQVR42u2a2XrjIAxGCRGLyWJnaef933RA2DEIgWmS6fSifL1oYhMd/4CQhIX4v82AmZsDU79tAq3WpsGJH9m0TJsW43cqaSCRqCWmkru1SSXgGynBa7RLFIIfSplYb9r+OZT6l/KX8pfyl/LnUdphGNwzlA6sBd+sHVsb2roHYgf/d7CfZYc2ZQQcvkp5g2Ib3gh4ig6un3IUl+PxOEbYXspIBFrHGEprRGhwOsAH0/qadrDQSTmI4z60I6rZSem/vmuVxU/SB3rxSuWhgO2QCNyg/DNDBkzXSemnFGCIt0sb2r0LLiYNNIrvINbgsE45iGG/tEunliAmTS0+7GpGTogPxXZQIKzZoLQJpBezi9IEXXaVhmY/iQsRIBsd9LJ+a5TOfKyQ+1MXZYhVqzbRrFeHKNnuoKaoZoXSWXFKKLvW+BZkxIR+SDSDmBXKIYPsGnETov6tlmJuQ6KdOiWB3Hd4olsPZDroBkbZ8ViIxFIODx+0TMthizKsg92uC3NeuND7WMawlAXk3W76S8uNHudjFiX8rtnVAe9nKC+pDwptxF21SVkKk+wkdGoai7uvkpUOxRwxJeUgRgIZZ1KLshAmOHEfEYkRws5CFwSga82/f3TQpIOHsgWlo0oOHTGRJVJ6k2Nc9xh4ELMgzoX4UsPaQRJThubjQ+bNE8gWZZAyv4rBgjPCnEPMQK7qsNbI7+mlgw8y6f3BLeRaWuKDjuKyHasTYaS6P3bg8AzEbFi2xFfGQUw2WknXz2rddx8KyKEjozDZxUgh6hPCizNmIGGLqd+Pth4GwmoiPiiBbFIWwggaVSh6Q8ah88eC7Aelckn/MDcYb75NaYkwlyJxAQNUnITSy+NaGYRM1jgDOSWzq0FJhcmHb6k/pmbvlixay1QCU4+53B4WPPXmwoknKIOjEcWQV8x2UO5SSi/lifdB25QqRzB8mZQzy6sP+Rx63O4Hn7jzUw7ZoDRkFrGpBryFUk10VpIZ3dJSpJSMlH7qfInyXKUsvJAZxDMjrt5CaSsjfmm5oa/My2dG3PRRhoCKxELT8NyIP7N6uimLNX7sXeOHfGcBJr209JZnKf3/l33DFb3m1e/yLZS4fgrMP1VKrPtho5QSNnbIVyhxzAc2TGe1rC0NxigZ8JcoOcwPZ1nKEOgubaIxEUZmohXKv0LpP7rSHRmWMkmmFByo0OkYiLOhWfCLlGHi17xmtU6F2QAVOiQIEA6zQ0ZBKzMvUvqVS6P10yJLnVIV2bick604bVWZ7L6oJZhaUtGo+QGdeLFMirNWK6YS8DKlcGZiMRuUXsybrFYN2JpWFm8+QelHeKRu0zUpUUyuTCQr5ap3UHrpCu9u25SqcDYc8nsps5L6nAA1KaNzULJdiVwx30NZVN2O7RGP9YdmzdS7+rdTJqcofF2dq56aFqZMa6qblMZTym1KkW9CYosy5oXQ8vzwDyjzovWmliumrECa91EmUWPm3Y/blAHz5gR3xiRjla1FaWma1J6XhzWQWb376cPSd7O4psUniBs54MNwxIfBBpKzRsBa4vpR0LM/mNKTSTCZ9SwZWBP06NbDMW2z2ZgDTZCdfYYdfcRyn45HtloHav/xir2uGvj36q7L72IiBdf58xWo7mNQ8xTjsJ6z+PhyXzCx2MDDXC6rNJX/K9cbt589aXjV4DynBYdWW4t72Zn8ekLvlrDZnOPx3PyqouVfP/TmZoN4Hexhvr14ZvwBfCXiLxGyQeQHC1ONAAAAAElFTkSuQmCC';
 (function(){const l=document.createElement('link');l.rel='icon';l.href=LOGO;document.head.appendChild(l)})();
 const PAISES={ar:{n:'Argentina',m:'ARS',dec:false},cl:{n:'Chile',m:'CLP',dec:false},mx:{n:'México',m:'MXN',dec:true},pe:{n:'Perú',m:'PEN',dec:true}};
-const S={paso:0,motivo:null,email:'',pais:'',lista:{},cargando:false,errLista:'',plat:null,precio:'',fecha:'',archivo:null,link:'',comentario:'',confirmo:false,enviando:false,error:'',hp:''};
+const BANDERAS={
+ar:'<svg class="flag" viewBox="0 0 24 16" width="28" height="19" aria-hidden="true"><rect width="24" height="16" fill="#74ACDF"/><rect y="5.33" width="24" height="5.34" fill="#fff"/><circle cx="12" cy="8" r="1.7" fill="#F6B40E"/></svg>',
+cl:'<svg class="flag" viewBox="0 0 24 16" width="28" height="19" aria-hidden="true"><rect width="24" height="16" fill="#fff"/><rect y="8" width="24" height="8" fill="#D52B1E"/><rect width="8" height="8" fill="#0039A6"/><polygon points="4.00,1.50 4.59,3.19 6.38,3.23 4.95,4.31 5.47,6.02 4.00,5.00 2.53,6.02 3.05,4.31 1.62,3.23 3.41,3.19" fill="#fff"/></svg>',
+mx:'<svg class="flag" viewBox="0 0 24 16" width="28" height="19" aria-hidden="true"><rect width="8" height="16" fill="#006847"/><rect x="8" width="8" height="16" fill="#fff"/><rect x="16" width="8" height="16" fill="#CE1126"/><circle cx="12" cy="8" r="1.9" fill="#8C6D3F"/></svg>',
+pe:'<svg class="flag" viewBox="0 0 24 16" width="28" height="19" aria-hidden="true"><rect width="8" height="16" fill="#D91023"/><rect x="8" width="8" height="16" fill="#fff"/><rect x="16" width="8" height="16" fill="#D91023"/></svg>'};
+const S={paso:0,motivo:null,email:'',pais:'',lista:{},cargando:false,errLista:'',plat:null,precio:'',fecha:'',archivo:null,link:'',comentario:'',confirmo:false,enviando:false,error:'',hp:'',busca:''};
 const app=document.getElementById('app');
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const emailOk=e=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((e||'').trim());
@@ -138,19 +149,28 @@ function pasoMotivo(){
   document.getElementById('next').onclick=()=>go(1);
 }
 
-function pasoPlataforma(){
+function opcionesPlat(){
   const lista=S.lista[S.pais]||[];
+  const q=S.busca.trim().toLowerCase();
+  const vis=q?lista.filter(p=>String(p.plataforma).toLowerCase().includes(q)||(S.plat&&p.id===S.plat.id)):lista;
+  return '<option value="">'+(S.cargando?'Cargando…':(S.pais?(vis.length?'Elegí la plataforma':'No encontramos ninguna con ese nombre'):'Primero elegí el país'))+'</option>'+
+    vis.map(p=>'<option value="'+esc(p.id)+'" '+(S.plat&&S.plat.id===p.id?'selected':'')+'>'+esc(p.plataforma)+'</option>').join('');
+}
+function pasoPlataforma(){
   const ok=emailOk(S.email)&&S.pais&&S.plat;
   app.innerHTML=enc(2)+'<h1>¿De qué plataforma?</h1><p class="sub">Elegí el plan que te cobra de más.</p>'+
     '<label class="f" for="em">Tu email de Lank</label><input id="em" type="email" inputmode="email" autocomplete="email" value="'+esc(S.email)+'" placeholder="tu@email.com">'+
-    '<label class="f" for="pa">País</label><select id="pa"><option value="">Elegí tu país</option>'+Object.keys(PAISES).map(k=>'<option value="'+k+'" '+(S.pais===k?'selected':'')+'>'+PAISES[k].n+'</option>').join('')+'</select>'+
-    '<label class="f" for="pl">Plataforma y plan</label><select id="pl" '+((!S.pais||S.cargando)?'disabled':'')+'><option value="">'+(S.cargando?'Cargando…':(S.pais?'Elegí la plataforma':'Primero elegí el país'))+'</option>'+
-      lista.map(p=>'<option value="'+esc(p.id)+'" '+(S.plat&&S.plat.id===p.id?'selected':'')+'>'+esc(p.plataforma)+'</option>').join('')+'</select>'+
-    (S.errLista?'<div class="err">'+esc(S.errLista)+'</div>':'')+
+    '<label class="f">País</label><div class="paises">'+Object.keys(PAISES).map(k=>'<button type="button" class="pais '+(S.pais===k?'sel':'')+'" data-p="'+k+'">'+BANDERAS[k]+'<span>'+PAISES[k].n+'</span></button>').join('')+'</div>'+
+    '<label class="f" for="pl">Plataforma y plan</label>'+
+    (S.pais&&!S.cargando&&!S.errLista?'<input id="bq" type="text" autocomplete="off" placeholder="Buscar, por ejemplo Netflix" value="'+esc(S.busca)+'" style="margin-bottom:8px">':'')+
+    '<select id="pl" '+((!S.pais||S.cargando)?'disabled':'')+'>'+opcionesPlat()+'</select>'+
+    (S.errLista?'<div class="err">'+esc(S.errLista)+'</div><button type="button" class="link" id="reintentar" style="margin-top:4px">Reintentar</button>':'')+
     '<div class="spacer"></div><button class="btn" id="next" '+(ok?'':'disabled')+'>Continuar</button><button class="link" id="back">Volver</button>';
   const em=document.getElementById('em');em.oninput=()=>{S.email=em.value;document.getElementById('next').disabled=!(emailOk(S.email)&&S.pais&&S.plat)};
-  document.getElementById('pa').onchange=e=>{S.pais=e.target.value;S.plat=null;S.precio='';if(S.pais)cargarLista(S.pais);else render()};
+  app.querySelectorAll('.pais').forEach(b=>b.onclick=()=>{S.pais=b.dataset.p;S.plat=null;S.precio='';S.busca='';S.errLista='';if(S.lista[S.pais])render();else cargarLista(S.pais)});
+  const bq=document.getElementById('bq');if(bq)bq.oninput=()=>{S.busca=bq.value;document.getElementById('pl').innerHTML=opcionesPlat()};
   document.getElementById('pl').onchange=e=>{S.plat=(S.lista[S.pais]||[]).find(p=>String(p.id)===e.target.value)||null;document.getElementById('next').disabled=!(emailOk(S.email)&&S.pais&&S.plat)};
+  const re=document.getElementById('reintentar');if(re)re.onclick=()=>cargarLista(S.pais);
   document.getElementById('next').onclick=()=>go(2);
   document.getElementById('back').onclick=()=>go(0);
 }
@@ -176,7 +196,7 @@ function calc(){
 function pasoDatos(){
   const c=calc(),P=c.P;
   app.innerHTML=enc(3)+'<h1>Datos del aumento</h1><p class="sub">Contanos cuánto pasó a cobrar la plataforma.</p>'+
-    '<label class="f">Plan</label><div class="ro">'+esc(S.plat.plataforma)+' · '+P.n+'</div>'+
+    '<label class="f">Plan</label><div class="ro"><div class="bd">'+BANDERAS[S.pais]+esc(S.plat.plataforma)+' · '+P.n+'</div></div>'+
     (S.pais!=='ar'?'<label class="f">Precio de plataforma registrado en Lank</label><div class="ro">'+fmt(S.plat.precio_original,S.pais)+'<span>no editable</span></div>':'')+
     '<label class="f" for="pr">Precio nuevo de la plataforma ('+P.m+')</label><input id="pr" type="text" inputmode="'+(P.dec?'decimal':'numeric')+'" value="'+esc(S.precio)+'" placeholder="'+(P.dec?'Ej: 199,50':'Ej: 6299')+'">'+
     (c.txt?'<div class="var '+c.txt[0]+'">'+esc(c.txt[1])+'</div>':'')+
@@ -236,7 +256,7 @@ function pasoListo(){
     '<div class="track"><div class="on">Recibido</div><div>En revisión</div><div>Resuelto</div></div>'+
     '<div class="note" style="text-align:center;margin-top:18px">Te avisamos por email'+(S.email?' a '+esc(S.email.trim()):'')+' cuando el pedido se resuelva.</div>'+
     '<div class="spacer"></div><button class="btn" id="next">Reportar otro</button>';
-  document.getElementById('next').onclick=()=>{const l=S.lista;Object.assign(S,{paso:0,motivo:null,plat:null,precio:'',fecha:'',archivo:null,link:'',comentario:'',confirmo:false,error:'',hp:'',lista:l});render()};
+  document.getElementById('next').onclick=()=>{const l=S.lista;Object.assign(S,{paso:0,motivo:null,plat:null,precio:'',fecha:'',archivo:null,link:'',comentario:'',confirmo:false,error:'',hp:'',busca:'',lista:l});render()};
 }
 function render(){[pasoMotivo,pasoPlataforma,pasoDatos,pasoListo][S.paso]()}
 render();
