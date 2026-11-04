@@ -94,6 +94,20 @@ select:disabled{opacity:.6}
 .pais.sel{border:2px solid var(--duenos);background:var(--duenos-soft);padding:10.5px 11.5px}
 .flag{flex:none;border:1px solid rgba(0,0,0,.18);border-radius:2px}
 .bd{display:flex;align-items:center;gap:8px}
+.combo{position:relative}
+.combo-btn{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;font:inherit;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:11px 12px;cursor:pointer;text-align:left}
+.combo-btn:disabled{opacity:.6;cursor:not-allowed}
+.combo-btn .ph{color:var(--muted)}
+.combo-btn .chev{color:var(--muted);flex:none}
+.combo-btn:focus-visible,.combo-btn[aria-expanded=true]{outline:none;border-color:var(--duenos);box-shadow:0 0 0 2px var(--duenos-soft)}
+.combo-panel{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--card);border:1.5px solid var(--duenos);border-radius:8px;overflow:hidden}
+.combo-panel[hidden]{display:none}
+.combo-q{border:0!important;border-bottom:1.5px solid var(--line)!important;border-radius:0!important;box-shadow:none!important}
+.combo-list{max-height:260px;overflow-y:auto}
+.combo-opt{display:block;width:100%;text-align:left;background:none;border:0;padding:10px 12px;font:inherit;color:var(--ink);cursor:pointer}
+.combo-opt:hover,.combo-opt.act{background:var(--duenos-soft)}
+.combo-opt.sel{font-weight:700}
+.combo-vacio{padding:12px;color:var(--muted);font-size:13.5px}
 @media (prefers-reduced-motion:no-preference){.card>*{animation:in .22s ease-out}@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1}}}
 </style>
 </head>
@@ -110,7 +124,7 @@ ar:'<svg class="flag" viewBox="0 0 24 16" width="28" height="19" aria-hidden="tr
 cl:'<svg class="flag" viewBox="0 0 24 16" width="28" height="19" aria-hidden="true"><rect width="24" height="16" fill="#fff"/><rect y="8" width="24" height="8" fill="#D52B1E"/><rect width="8" height="8" fill="#0039A6"/><polygon points="4.00,1.50 4.59,3.19 6.38,3.23 4.95,4.31 5.47,6.02 4.00,5.00 2.53,6.02 3.05,4.31 1.62,3.23 3.41,3.19" fill="#fff"/></svg>',
 mx:'<svg class="flag" viewBox="0 0 24 16" width="28" height="19" aria-hidden="true"><rect width="8" height="16" fill="#006847"/><rect x="8" width="8" height="16" fill="#fff"/><rect x="16" width="8" height="16" fill="#CE1126"/><circle cx="12" cy="8" r="1.9" fill="#8C6D3F"/></svg>',
 pe:'<svg class="flag" viewBox="0 0 24 16" width="28" height="19" aria-hidden="true"><rect width="8" height="16" fill="#D91023"/><rect x="8" width="8" height="16" fill="#fff"/><rect x="16" width="8" height="16" fill="#D91023"/></svg>'};
-const S={paso:0,motivo:null,email:'',pais:'',lista:{},cargando:false,errLista:'',plat:null,precio:'',fecha:'',archivo:null,link:'',comentario:'',confirmo:false,enviando:false,error:'',hp:'',busca:''};
+const S={paso:0,motivo:null,email:'',pais:'',lista:{},cargando:false,errLista:'',plat:null,precio:'',fecha:'',archivo:null,link:'',comentario:'',confirmo:false,enviando:false,error:'',hp:'',busca:'',abierto:false,vis:[],act:0};
 const app=document.getElementById('app');
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const emailOk=e=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((e||'').trim());
@@ -149,27 +163,49 @@ function pasoMotivo(){
   document.getElementById('next').onclick=()=>go(1);
 }
 
-function opcionesPlat(){
+function pintarLista(){
+  const l=document.getElementById('cl');if(!l)return;
   const lista=S.lista[S.pais]||[];
   const q=S.busca.trim().toLowerCase();
-  const vis=q?lista.filter(p=>String(p.plataforma).toLowerCase().includes(q)||(S.plat&&p.id===S.plat.id)):lista;
-  return '<option value="">'+(S.cargando?'Cargando…':(S.pais?(vis.length?'Elegí la plataforma':'No encontramos ninguna con ese nombre'):'Primero elegí el país'))+'</option>'+
-    vis.map(p=>'<option value="'+esc(p.id)+'" '+(S.plat&&S.plat.id===p.id?'selected':'')+'>'+esc(p.plataforma)+'</option>').join('');
+  const vis=q?lista.filter(p=>String(p.plataforma).toLowerCase().includes(q)):lista;
+  S.vis=vis;if(S.act>vis.length-1)S.act=Math.max(vis.length-1,0);
+  l.innerHTML=vis.length?vis.map((p,i)=>'<button type="button" role="option" class="combo-opt'+(i===S.act?' act':'')+(S.plat&&S.plat.id===p.id?' sel':'')+'" data-i="'+i+'">'+esc(p.plataforma)+'</button>').join(''):'<div class="combo-vacio">No encontramos ninguna con ese nombre</div>';
+  l.querySelectorAll('.combo-opt').forEach(b=>b.onclick=()=>elegir(vis[Number(b.dataset.i)]));
 }
+function cerrarCombo(){
+  S.abierto=false;
+  const p=document.getElementById('plpanel'),b=document.getElementById('plbtn');
+  if(p)p.hidden=true;if(b)b.setAttribute('aria-expanded','false');
+}
+function elegir(p){if(!p)return;S.plat=p;S.abierto=false;render()}
+document.addEventListener('click',e=>{const c=document.querySelector('.combo');if(S.abierto&&c&&!c.contains(e.target))cerrarCombo()});
 function pasoPlataforma(){
+  S.abierto=false;
   const ok=emailOk(S.email)&&S.pais&&S.plat;
+  const txtBtn=S.plat?S.plat.plataforma:(S.cargando?'Cargando…':(S.pais?'Elegí la plataforma':'Primero elegí el país'));
   app.innerHTML=enc(2)+'<h1>¿De qué plataforma?</h1><p class="sub">Elegí el plan que te cobra de más.</p>'+
     '<label class="f" for="em">Tu email de Lank</label><input id="em" type="email" inputmode="email" autocomplete="email" value="'+esc(S.email)+'" placeholder="tu@email.com">'+
     '<label class="f">País</label><div class="paises">'+Object.keys(PAISES).map(k=>'<button type="button" class="pais '+(S.pais===k?'sel':'')+'" data-p="'+k+'">'+BANDERAS[k]+'<span>'+PAISES[k].n+'</span></button>').join('')+'</div>'+
-    '<label class="f" for="pl">Plataforma y plan</label>'+
-    (S.pais&&!S.cargando&&!S.errLista?'<input id="bq" type="text" autocomplete="off" placeholder="Buscar, por ejemplo Netflix" value="'+esc(S.busca)+'" style="margin-bottom:8px">':'')+
-    '<select id="pl" '+((!S.pais||S.cargando)?'disabled':'')+'>'+opcionesPlat()+'</select>'+
+    '<label class="f">Plataforma y plan</label>'+
+    '<div class="combo"><button type="button" class="combo-btn" id="plbtn" aria-haspopup="listbox" aria-expanded="false" '+((!S.pais||S.cargando||S.errLista)?'disabled':'')+'><span class="'+(S.plat?'':'ph')+'">'+esc(txtBtn)+'</span><span class="chev">▾</span></button>'+
+    '<div class="combo-panel" id="plpanel" hidden><input id="bq" class="combo-q" type="text" autocomplete="off" placeholder="Buscar plataforma" aria-label="Buscar plataforma"><div class="combo-list" id="cl" role="listbox"></div></div></div>'+
     (S.errLista?'<div class="err">'+esc(S.errLista)+'</div><button type="button" class="link" id="reintentar" style="margin-top:4px">Reintentar</button>':'')+
     '<div class="spacer"></div><button class="btn" id="next" '+(ok?'':'disabled')+'>Continuar</button><button class="link" id="back">Volver</button>';
   const em=document.getElementById('em');em.oninput=()=>{S.email=em.value;document.getElementById('next').disabled=!(emailOk(S.email)&&S.pais&&S.plat)};
   app.querySelectorAll('.pais').forEach(b=>b.onclick=()=>{S.pais=b.dataset.p;S.plat=null;S.precio='';S.busca='';S.errLista='';if(S.lista[S.pais])render();else cargarLista(S.pais)});
-  const bq=document.getElementById('bq');if(bq)bq.oninput=()=>{S.busca=bq.value;document.getElementById('pl').innerHTML=opcionesPlat()};
-  document.getElementById('pl').onchange=e=>{S.plat=(S.lista[S.pais]||[]).find(p=>String(p.id)===e.target.value)||null;document.getElementById('next').disabled=!(emailOk(S.email)&&S.pais&&S.plat)};
+  const btn=document.getElementById('plbtn'),panel=document.getElementById('plpanel'),bq=document.getElementById('bq');
+  btn.onclick=()=>{
+    if(S.abierto){cerrarCombo();return}
+    S.abierto=true;S.busca='';S.act=0;panel.hidden=false;btn.setAttribute('aria-expanded','true');bq.value='';pintarLista();bq.focus();
+  };
+  bq.oninput=()=>{S.busca=bq.value;S.act=0;pintarLista()};
+  bq.onkeydown=e=>{
+    const ver=()=>{pintarLista();const a=document.querySelector('.combo-opt.act');if(a&&a.scrollIntoView)a.scrollIntoView({block:'nearest'})};
+    if(e.key==='ArrowDown'){e.preventDefault();S.act=Math.min(S.act+1,S.vis.length-1);ver()}
+    else if(e.key==='ArrowUp'){e.preventDefault();S.act=Math.max(S.act-1,0);ver()}
+    else if(e.key==='Enter'){e.preventDefault();elegir(S.vis[S.act])}
+    else if(e.key==='Escape'){cerrarCombo();btn.focus()}
+  };
   const re=document.getElementById('reintentar');if(re)re.onclick=()=>cargarLista(S.pais);
   document.getElementById('next').onclick=()=>go(2);
   document.getElementById('back').onclick=()=>go(0);
