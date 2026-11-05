@@ -167,7 +167,7 @@ async function cargarLista(p){
     S.lista[p]=rows.filter(r=>Number(r.precio_original)>0).sort((a,b)=>String(a.plataforma).localeCompare(String(b.plataforma),'es'));
   }catch(e){S.errLista='No pudimos cargar las plataformas. Probá de nuevo en un momento.'}
   S.cargando=false;
-  if(S.paso===1||S.paso===2)render();
+  if(S.paso===2||(S.paso===1&&S.errLista))render();
 }
 
 function pasoMotivo(){
