@@ -125,6 +125,7 @@ select:disabled{opacity:.6}
 .file-btn{flex:none;background:var(--duenos-soft);border:1.5px solid var(--duenos);border-radius:8px;padding:6px 12px;font-weight:700;font-size:13.5px}
 .file-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:13.5px}
 .file-name.has{color:var(--ink)}
+.done .ic.aviso{background:var(--warn-soft);color:var(--ink)}
 @media (prefers-reduced-motion:no-preference){.card>*{animation:in .22s ease-out}@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1}}}
 </style>
 </head>
@@ -175,19 +176,21 @@ function pasoMotivo(){
   if(S.motivo==='impuestos')msg='<div class="note">Vamos a revisar si el cambio viene de impuestos o del tipo de cambio. En el paso de datos, sumá la captura del cobro.</div>';
   app.innerHTML=enc(1)+'<h1>Reportar un aumento de precio</h1><p class="sub">¿Qué pasó?</p>'+
     ops.map(o=>'<button class="opt '+(S.motivo===o[0]?'sel':'')+'" data-m="'+o[0]+'"><span class="dot"></span><span><b>'+o[1]+'</b>'+(o[2]?'<small>'+o[2]+'</small>':'')+'</span></button>').join('')+
-    msg+'<div class="note">Lank toma como referencia el precio oficial contratando directo en la web de la plataforma.</div><div class="spacer"></div><button class="btn" id="next" '+((S.motivo==='oficial'||S.motivo==='impuestos')?'':'disabled')+'>Continuar</button>';
+    msg+'<div class="note">Lank toma como referencia el precio oficial contratando directo en la web de la plataforma.</div><div class="spacer"></div><button class="btn" id="next" '+(S.motivo?'':'disabled')+'>Continuar</button>';
   app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{S.motivo=b.dataset.m;render()});
-  document.getElementById('next').onclick=()=>go(1);
+  document.getElementById('next').onclick=()=>go(S.motivo==='plan'?5:1);
 }
 
 function listaFiltrada(){
   const lista=S.lista[S.pais]||[];
   const q=S.busca.trim().toLowerCase();
-  return q?lista.filter(p=>String(p.plataforma).toLowerCase().includes(q)):lista;
+  if(!q)return S.plat?[S.plat]:[];
+  return lista.filter(p=>String(p.plataforma).toLowerCase().includes(q));
 }
 function pintarResultados(){
   const l=document.getElementById('res');if(!l)return;
   const vis=listaFiltrada();S.vis=vis;if(S.act>vis.length-1)S.act=Math.max(vis.length-1,0);
+  if(!vis.length&&!S.busca.trim()){l.innerHTML='';return}
   l.innerHTML=vis.length?vis.map((p,i)=>'<button type="button" role="option" class="res-opt'+(i===S.act?' act':'')+(S.plat&&S.plat.id===p.id?' sel':'')+'" data-i="'+i+'"><span>'+esc(p.plataforma)+'</span>'+(S.plat&&S.plat.id===p.id?'<span>✓</span>':'')+'</button>').join(''):'<div class="res-vacio">No encontramos ninguna con ese nombre</div>';
   l.querySelectorAll('.res-opt').forEach(b=>b.onclick=()=>{S.act=Number(b.dataset.i);S.plat=vis[S.act];pintarResultados();document.getElementById('next').disabled=false});
 }
@@ -308,7 +311,14 @@ function pasoListo(){
     '<div class="spacer"></div><button class="btn" id="next">Reportar otro</button>';
   document.getElementById('next').onclick=()=>{const l=S.lista;Object.assign(S,{paso:0,motivo:null,plat:null,precio:'',fecha:'',archivo:null,link:'',comentario:'',confirmo:false,error:'',hp:'',busca:'',lista:l});render()};
 }
-function render(){[pasoMotivo,pasoPais,pasoBuscar,pasoDatos,pasoListo][S.paso]()}
+function pasoNoAplica(){
+  app.innerHTML='<div class="top"><img class="logo" alt="Lank" src="'+LOGO+'"></div>'+
+    '<div class="done"><div class="ic aviso">!</div><h1>Este formulario es solo para aumentos de precio</h1><p class="sub">Cambiar de plan no es un aumento del precio de la plataforma, así que no podemos tomarlo como reporte.</p></div>'+
+    '<div class="note" style="text-align:center">Si querés cambiar el plan de tu grupo, escribinos por el chat de soporte de Lank y te ayudamos.</div>'+
+    '<div class="spacer"></div><button class="btn" id="next">Volver al inicio</button>';
+  document.getElementById('next').onclick=()=>{S.motivo=null;go(0)};
+}
+function render(){[pasoMotivo,pasoPais,pasoBuscar,pasoDatos,pasoListo,pasoNoAplica][S.paso]()}
 render();
 </script>
 </body>
