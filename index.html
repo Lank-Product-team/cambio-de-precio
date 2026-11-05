@@ -126,6 +126,7 @@ select:disabled{opacity:.6}
 .file-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:13.5px}
 .file-name.has{color:var(--ink)}
 .done .ic.aviso{background:var(--warn-soft);color:var(--ink)}
+.done .sub b{color:var(--ink)}
 @media (prefers-reduced-motion:no-preference){.card>*{animation:in .22s ease-out}@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1}}}
 </style>
 </head>
@@ -136,7 +137,7 @@ select:disabled{opacity:.6}
 const API='https://seycgghccgzrxgcbpdnf.supabase.co/functions/v1/quick-processor';
 const LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKUAAABACAMAAABMfEfZAAAASFBMVEUAAAD0ZT78a0L+qgH4aFj5a0T1a0X/ExP6dib9sRP+/AK/Pz37tSP8tBl/fwDzqlj79fz72WT1Zz60al/nqaP60qe/fz+4uBUguh1/AAAAGHRSTlMA/vj8E5plAQgRAgRgnQINAhFSBAQMBANclXAdAAAFFklEQVR42u2a2XrjIAxGCRGLyWJnaef933RA2DEIgWmS6fSifL1oYhMd/4CQhIX4v82AmZsDU79tAq3WpsGJH9m0TJsW43cqaSCRqCWmkru1SSXgGynBa7RLFIIfSplYb9r+OZT6l/KX8pfyl/LnUdphGNwzlA6sBd+sHVsb2roHYgf/d7CfZYc2ZQQcvkp5g2Ib3gh4ig6un3IUl+PxOEbYXspIBFrHGEprRGhwOsAH0/qadrDQSTmI4z60I6rZSem/vmuVxU/SB3rxSuWhgO2QCNyg/DNDBkzXSemnFGCIt0sb2r0LLiYNNIrvINbgsE45iGG/tEunliAmTS0+7GpGTogPxXZQIKzZoLQJpBezi9IEXXaVhmY/iQsRIBsd9LJ+a5TOfKyQ+1MXZYhVqzbRrFeHKNnuoKaoZoXSWXFKKLvW+BZkxIR+SDSDmBXKIYPsGnETov6tlmJuQ6KdOiWB3Hd4olsPZDroBkbZ8ViIxFIODx+0TMthizKsg92uC3NeuND7WMawlAXk3W76S8uNHudjFiX8rtnVAe9nKC+pDwptxF21SVkKk+wkdGoai7uvkpUOxRwxJeUgRgIZZ1KLshAmOHEfEYkRws5CFwSga82/f3TQpIOHsgWlo0oOHTGRJVJ6k2Nc9xh4ELMgzoX4UsPaQRJThubjQ+bNE8gWZZAyv4rBgjPCnEPMQK7qsNbI7+mlgw8y6f3BLeRaWuKDjuKyHasTYaS6P3bg8AzEbFi2xFfGQUw2WknXz2rddx8KyKEjozDZxUgh6hPCizNmIGGLqd+Pth4GwmoiPiiBbFIWwggaVSh6Q8ah88eC7Aelckn/MDcYb75NaYkwlyJxAQNUnITSy+NaGYRM1jgDOSWzq0FJhcmHb6k/pmbvlixay1QCU4+53B4WPPXmwoknKIOjEcWQV8x2UO5SSi/lifdB25QqRzB8mZQzy6sP+Rx63O4Hn7jzUw7ZoDRkFrGpBryFUk10VpIZ3dJSpJSMlH7qfInyXKUsvJAZxDMjrt5CaSsjfmm5oa/My2dG3PRRhoCKxELT8NyIP7N6uimLNX7sXeOHfGcBJr209JZnKf3/l33DFb3m1e/yLZS4fgrMP1VKrPtho5QSNnbIVyhxzAc2TGe1rC0NxigZ8JcoOcwPZ1nKEOgubaIxEUZmohXKv0LpP7rSHRmWMkmmFByo0OkYiLOhWfCLlGHi17xmtU6F2QAVOiQIEA6zQ0ZBKzMvUvqVS6P10yJLnVIV2bick604bVWZ7L6oJZhaUtGo+QGdeLFMirNWK6YS8DKlcGZiMRuUXsybrFYN2JpWFm8+QelHeKRu0zUpUUyuTCQr5ap3UHrpCu9u25SqcDYc8nsps5L6nAA1KaNzULJdiVwx30NZVN2O7RGP9YdmzdS7+rdTJqcofF2dq56aFqZMa6qblMZTym1KkW9CYosy5oXQ8vzwDyjzovWmliumrECa91EmUWPm3Y/blAHz5gR3xiRjla1FaWma1J6XhzWQWb376cPSd7O4psUniBs54MNwxIfBBpKzRsBa4vpR0LM/mNKTSTCZ9SwZWBP06NbDMW2z2ZgDTZCdfYYdfcRyn45HtloHav/xir2uGvj36q7L72IiBdf58xWo7mNQ8xTjsJ6z+PhyXzCx2MDDXC6rNJX/K9cbt589aXjV4DynBYdWW4t72Zn8ekLvlrDZnOPx3PyqouVfP/TmZoN4Hexhvr14ZvwBfCXiLxGyQeQHC1ONAAAAAElFTkSuQmCC';
 (function(){const l=document.createElement('link');l.rel='icon';l.href=LOGO;document.head.appendChild(l)})();
-const PAISES={ar:{n:'Argentina',m:'ARS',dec:false},cl:{n:'Chile',m:'CLP',dec:false},mx:{n:'México',m:'MXN',dec:true},pe:{n:'Perú',m:'PEN',dec:true}};
+const PAISES={ar:{n:'Argentina',m:'ARS'},cl:{n:'Chile',m:'CLP'},mx:{n:'México',m:'MXN'},pe:{n:'Perú',m:'PEN'}};
 const BANDERAS={
 ar:'<svg class="flag" viewBox="0 0 24 16" width="28" height="19" aria-hidden="true"><rect width="24" height="16" fill="#74ACDF"/><rect y="5.33" width="24" height="5.34" fill="#fff"/><circle cx="12" cy="8" r="1.7" fill="#F6B40E"/></svg>',
 cl:'<svg class="flag" viewBox="0 0 24 16" width="28" height="19" aria-hidden="true"><rect width="24" height="16" fill="#fff"/><rect y="8" width="24" height="8" fill="#D52B1E"/><rect width="8" height="8" fill="#0039A6"/><polygon points="4.00,1.50 4.59,3.19 6.38,3.23 4.95,4.31 5.47,6.02 4.00,5.00 2.53,6.02 3.05,4.31 1.62,3.23 3.41,3.19" fill="#fff"/></svg>',
@@ -172,7 +173,6 @@ async function cargarLista(p){
 function pasoMotivo(){
   const ops=[['oficial','Subió el precio oficial',''],['impuestos','Impuestos o tipo de cambio','Por ejemplo, pago en dólares'],['plan','Cambié de plan','Te mostramos cómo cambiarlo']];
   let msg='';
-  if(S.motivo==='plan')msg='<div class="note">Esto no es un aumento de la plataforma. Escribinos por el chat de soporte de Lank y te ayudamos a cambiar el plan de tu grupo.</div>';
   if(S.motivo==='impuestos')msg='<div class="note">Vamos a revisar si el cambio viene de impuestos o del tipo de cambio. En el paso de datos, sumá la captura del cobro.</div>';
   app.innerHTML=enc(1)+'<h1>Reportar un aumento de precio</h1><p class="sub">¿Qué pasó?</p>'+
     ops.map(o=>'<button class="opt '+(S.motivo===o[0]?'sel':'')+'" data-m="'+o[0]+'"><span class="dot"></span><span><b>'+o[1]+'</b>'+(o[2]?'<small>'+o[2]+'</small>':'')+'</span></button>').join('')+
@@ -229,31 +229,34 @@ function pasoBuscar(){
   bq.focus();
 }
 
-function limpiarDec(v){let o='',sep=false;for(const ch of v){if(/\d/.test(ch))o+=ch;else if((ch==='.'||ch===',')&&!sep){o+=ch;sep=true}}return o}
+function limpiarPrecio(v){return String(v).replace(/[^0-9.,]/g,'')}
+function parsearPrecio(v){
+  v=limpiarPrecio(v||'');
+  if(!/[0-9]/.test(v))return NaN;
+  const ip=v.lastIndexOf('.'),ic=v.lastIndexOf(',');
+  let ent=v,dec='';
+  if(ip>=0&&ic>=0){const i=Math.max(ip,ic);ent=v.slice(0,i).replace(/[.,]/g,'');dec=v.slice(i+1)}
+  else if(ip>=0||ic>=0){
+    const sep=ip>=0?'.':',',i=v.lastIndexOf(sep),antes=v.slice(0,i),desp=v.slice(i+1);
+    if(v.split(sep).length>2||(desp.length===3&&antes.length>0&&antes[0]!=='0'))ent=v.replace(/[.,]/g,'');
+    else{ent=antes;dec=desp}
+  }
+  return parseFloat((ent||'0')+(dec?'.'+dec:''));
+}
 function dias(d){const h=new Date();h.setHours(0,0,0,0);return Math.round((new Date(d+'T00:00:00')-h)/864e5)}
 function calc(){
   const P=PAISES[S.pais];
-  const pr=parseFloat(String(S.precio).replace(',','.'));
-  let estado='vacio',txt='';
-  if(S.pais!=='ar'&&pr>0){
-    const v=(pr/Number(S.plat.precio_original)-1)*100,t=(v>0?'+':'')+v.toFixed(1).replace('.',',')+'%';
-    if(v<-30){estado='coment';txt=['warn',t+' · una baja grande, contanos qué pasó']}
-    else if(v<=60){estado='ok';txt=['good',t+' · dentro del rango normal']}
-    else if(v<=150){estado='coment';txt=['warn',t+' · es un salto grande, agregá un comentario']}
-    else{estado='rechazo';txt=['bad',t+' · demasiado alto, revisá el monto y la moneda']}
-  }
+  const pr=parsearPrecio(S.precio);
   const fd=S.fecha?dias(S.fecha):null,fechaOk=fd===null||(fd>=-60&&fd<=90);
   const linkOk=!S.link||/^https?:\/\/\S+\.\S+/.test(S.link);
-  const ok=pr>0&&estado!=='rechazo'&&(estado!=='coment'||S.comentario.trim().length>4)&&fechaOk&&linkOk&&!!S.archivo&&S.confirmo&&!S.enviando;
-  return{pr,estado,txt,fechaOk,linkOk,ok,P};
+  const ok=pr>0&&pr<1e12&&fechaOk&&linkOk&&!!S.archivo&&S.confirmo&&!S.enviando;
+  return{pr,fechaOk,linkOk,ok,P};
 }
 function pasoDatos(){
   const c=calc(),P=c.P;
   app.innerHTML=enc(4)+'<h1>Datos del aumento</h1><p class="sub">Contanos cuánto pasó a cobrar la plataforma.</p>'+
-    '<div class="resumen"><div class="bd">'+BANDERAS[S.pais]+'<b>'+esc(S.plat.plataforma)+'</b></div><div class="rs-l">Precio actual de la plataforma en Lank'+(S.pais==='ar'?' (con impuestos)':'')+'</div><div class="rs-v">'+fmt(S.plat.precio_original,S.pais)+'</div></div>'+
-    '<label class="f" for="pr">Precio nuevo de la plataforma ('+P.m+')</label><input id="pr" type="text" inputmode="'+(P.dec?'decimal':'numeric')+'" value="'+esc(S.precio)+'" placeholder="'+(P.dec?'Ej: 199,50':'Ej: 6299')+'">'+
-    (c.txt?'<div class="var '+c.txt[0]+'">'+esc(c.txt[1])+'</div>':'')+
-    (c.estado==='coment'?'<label class="f" for="co">Comentario</label><textarea id="co" placeholder="¿De dónde sale este precio?">'+esc(S.comentario)+'</textarea>':'')+
+    '<div class="resumen"><div class="bd">'+BANDERAS[S.pais]+'<b>'+esc(S.plat.plataforma)+'</b></div><div class="rs-l">Precio actual de la plataforma en Lank</div><div class="rs-v">'+fmt(S.plat.precio_original,S.pais)+'</div></div>'+
+    '<label class="f" for="pr">Precio nuevo de la plataforma ('+P.m+')</label><input id="pr" type="text" inputmode="decimal" value="'+esc(S.precio)+'" placeholder="Ej: 6299">'+
     '<label class="f" for="fe">Fecha del aumento (opcional)</label><input id="fe" type="date" value="'+esc(S.fecha)+'">'+
     '<label class="f">Captura</label><label class="file" for="ca"><input id="ca" type="file" accept="image/*,application/pdf"><span class="file-btn">Elegir archivo</span><span class="file-name'+(S.archivo?' has':'')+'">'+(S.archivo?esc(S.archivo.name):'Ningún archivo seleccionado')+'</span></label>'+
     (S.fecha&&!c.fechaOk?'<div class="err">La fecha tiene que estar entre 60 días atrás y 90 días adelante.</div>':'')+
@@ -264,9 +267,8 @@ function pasoDatos(){
     '<label class="check"><input type="checkbox" id="cf" '+(S.confirmo?'checked':'')+'><span>Confirmo que es el precio oficial de la plataforma, contratando directo en su web, y no de un intermediario.</span></label>'+
     (S.error?'<div class="err">'+esc(S.error)+'</div>':'')+
     '<div class="spacer"></div><button class="btn" id="next" '+(c.ok?'':'disabled')+'>'+(S.enviando?'Enviando…':'Enviar reporte')+'</button><button class="link" id="back">Volver</button>';
-  const keep=(id,fn)=>{const el=document.getElementById(id);if(!el)return;el.oninput=()=>{const prev=calc().estado;fn(el.value);const now=calc().estado;if(prev!==now||id==='pr'||id==='li'){const pos=el.selectionStart;render();const n=document.getElementById(id);if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}}else{document.getElementById('next').disabled=!calc().ok}}};
-  keep('pr',v=>{S.precio=P.dec?limpiarDec(v):v.replace(/[^0-9]/g,'')});
-  keep('co',v=>{S.comentario=v});
+  const keep=(id,fn)=>{const el=document.getElementById(id);if(!el)return;el.oninput=()=>{fn(el.value);if(id==='pr'||id==='li'){const pos=el.selectionStart;render();const n=document.getElementById(id);if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}}else{document.getElementById('next').disabled=!calc().ok}}};
+  keep('pr',v=>{S.precio=limpiarPrecio(v)});
   keep('li',v=>{S.link=v.trim()});
   const fe=document.getElementById('fe');if(fe)fe.onchange=()=>{S.fecha=fe.value;render()};
   const ca=document.getElementById('ca');if(ca)ca.onchange=()=>{const f=ca.files[0];if(f&&f.size>5242880){S.archivo=null;S.error='La captura pesa más de 5 MB. Probá con una más liviana.';}else{S.archivo=f||null;S.error=''}render()};
@@ -313,8 +315,7 @@ function pasoListo(){
 }
 function pasoNoAplica(){
   app.innerHTML='<div class="top"><img class="logo" alt="Lank" src="'+LOGO+'"></div>'+
-    '<div class="done"><div class="ic aviso">!</div><h1>Este formulario es solo para aumentos de precio</h1><p class="sub">Cambiar de plan no es un aumento del precio de la plataforma, así que no podemos tomarlo como reporte.</p></div>'+
-    '<div class="note" style="text-align:center">Si querés cambiar el plan de tu grupo, escribinos por el chat de soporte de Lank y te ayudamos.</div>'+
+    '<div class="done"><div class="ic aviso"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div><h1>Este formulario es solo para aumentos de precio</h1><p class="sub">Para cambios de plan tenés que <b>dar de baja tu grupo</b> y <b>crear uno nuevo</b> en el plan correcto.</p></div>'+
     '<div class="spacer"></div><button class="btn" id="next">Volver al inicio</button>';
   document.getElementById('next').onclick=()=>{S.motivo=null;go(0)};
 }
