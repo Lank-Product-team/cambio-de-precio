@@ -108,6 +108,23 @@ select:disabled{opacity:.6}
 .combo-opt:hover,.combo-opt.act{background:var(--duenos-soft)}
 .combo-opt.sel{font-weight:700}
 .combo-vacio{padding:12px;color:var(--muted);font-size:13.5px}
+.busca{margin-bottom:10px}
+.res{max-height:340px;overflow-y:auto;border:1.5px solid var(--line);border-radius:8px}
+.res:empty{display:none}
+.res-opt{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:11px 12px;font:inherit;color:var(--ink);cursor:pointer}
+.res-opt:last-child{border-bottom:0}
+.res-opt:hover,.res-opt.act{background:var(--duenos-soft)}
+.res-opt.sel{font-weight:700;background:var(--duenos-soft)}
+.res-vacio{padding:14px 12px;color:var(--muted);font-size:13.5px}
+.resumen{background:var(--soft);border-radius:8px;padding:14px;margin:6px 0 4px}
+.rs-l{color:var(--muted);font-size:12.5px;margin-top:10px}
+.rs-v{font-size:20px;font-weight:700}
+.file{display:flex;align-items:center;gap:10px;width:100%;min-width:0;border:1.5px dashed var(--line);border-radius:8px;padding:10px 12px;cursor:pointer}
+.file:focus-within{border-color:var(--duenos);box-shadow:0 0 0 2px var(--duenos-soft)}
+.file input{position:absolute;opacity:0;width:1px;height:1px;overflow:hidden}
+.file-btn{flex:none;background:var(--duenos-soft);border:1.5px solid var(--duenos);border-radius:8px;padding:6px 12px;font-weight:700;font-size:13.5px}
+.file-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:13.5px}
+.file-name.has{color:var(--ink)}
 @media (prefers-reduced-motion:no-preference){.card>*{animation:in .22s ease-out}@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1}}}
 </style>
 </head>
@@ -129,7 +146,7 @@ const app=document.getElementById('app');
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const emailOk=e=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((e||'').trim());
 const fmt=(n,p)=>PAISES[p].m+' '+Number(n).toLocaleString('es-AR',{maximumFractionDigits:2});
-function enc(n){return '<div class="top"><img class="logo" alt="Lank" src="'+LOGO+'"><span class="steps" aria-label="Paso '+n+' de 3">'+[1,2,3].map(i=>'<i class="'+(i<=n?'on':'')+'"></i>').join('')+'</span></div>'}
+function enc(n){return '<div class="top"><img class="logo" alt="Lank" src="'+LOGO+'"><span class="steps" aria-label="Paso '+n+' de 4">'+[1,2,3,4].map(i=>'<i class="'+(i<=n?'on':'')+'"></i>').join('')+'</span></div>'}
 function go(p){S.paso=p;S.error='';render();window.scrollTo(0,0)}
 function uuid(){return (window.crypto&&crypto.randomUUID)?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16)})}
 
@@ -148,7 +165,7 @@ async function cargarLista(p){
     S.lista[p]=rows.filter(r=>Number(r.precio_original)>0).sort((a,b)=>String(a.plataforma).localeCompare(String(b.plataforma),'es'));
   }catch(e){S.errLista='No pudimos cargar las plataformas. Probá de nuevo en un momento.'}
   S.cargando=false;
-  if(S.paso===1)render();
+  if(S.paso===1||S.paso===2)render();
 }
 
 function pasoMotivo(){
@@ -163,52 +180,50 @@ function pasoMotivo(){
   document.getElementById('next').onclick=()=>go(1);
 }
 
-function pintarLista(){
-  const l=document.getElementById('cl');if(!l)return;
+function listaFiltrada(){
   const lista=S.lista[S.pais]||[];
   const q=S.busca.trim().toLowerCase();
-  const vis=q?lista.filter(p=>String(p.plataforma).toLowerCase().includes(q)):lista;
-  S.vis=vis;if(S.act>vis.length-1)S.act=Math.max(vis.length-1,0);
-  l.innerHTML=vis.length?vis.map((p,i)=>'<button type="button" role="option" class="combo-opt'+(i===S.act?' act':'')+(S.plat&&S.plat.id===p.id?' sel':'')+'" data-i="'+i+'">'+esc(p.plataforma)+'</button>').join(''):'<div class="combo-vacio">No encontramos ninguna con ese nombre</div>';
-  l.querySelectorAll('.combo-opt').forEach(b=>b.onclick=()=>elegir(vis[Number(b.dataset.i)]));
+  return q?lista.filter(p=>String(p.plataforma).toLowerCase().includes(q)):lista;
 }
-function cerrarCombo(){
-  S.abierto=false;
-  const p=document.getElementById('plpanel'),b=document.getElementById('plbtn');
-  if(p)p.hidden=true;if(b)b.setAttribute('aria-expanded','false');
+function pintarResultados(){
+  const l=document.getElementById('res');if(!l)return;
+  const vis=listaFiltrada();S.vis=vis;if(S.act>vis.length-1)S.act=Math.max(vis.length-1,0);
+  l.innerHTML=vis.length?vis.map((p,i)=>'<button type="button" role="option" class="res-opt'+(i===S.act?' act':'')+(S.plat&&S.plat.id===p.id?' sel':'')+'" data-i="'+i+'"><span>'+esc(p.plataforma)+'</span>'+(S.plat&&S.plat.id===p.id?'<span>✓</span>':'')+'</button>').join(''):'<div class="res-vacio">No encontramos ninguna con ese nombre</div>';
+  l.querySelectorAll('.res-opt').forEach(b=>b.onclick=()=>{S.act=Number(b.dataset.i);S.plat=vis[S.act];pintarResultados();document.getElementById('next').disabled=false});
 }
-function elegir(p){if(!p)return;S.plat=p;S.abierto=false;render()}
-document.addEventListener('click',e=>{const c=document.querySelector('.combo');if(S.abierto&&c&&!c.contains(e.target))cerrarCombo()});
-function pasoPlataforma(){
-  S.abierto=false;
-  const ok=emailOk(S.email)&&S.pais&&S.plat;
-  const txtBtn=S.plat?S.plat.plataforma:(S.cargando?'Cargando…':(S.pais?'Elegí la plataforma':'Primero elegí el país'));
-  app.innerHTML=enc(2)+'<h1>¿De qué plataforma?</h1><p class="sub">Elegí el plan que te cobra de más.</p>'+
+function pasoPais(){
+  const ok=emailOk(S.email)&&S.pais;
+  app.innerHTML=enc(2)+'<h1>¿Quién reporta y de qué país?</h1><p class="sub">Usá el email de tu cuenta de Lank.</p>'+
     '<label class="f" for="em">Tu email de Lank</label><input id="em" type="email" inputmode="email" autocomplete="email" value="'+esc(S.email)+'" placeholder="tu@email.com">'+
     '<label class="f">País</label><div class="paises">'+Object.keys(PAISES).map(k=>'<button type="button" class="pais '+(S.pais===k?'sel':'')+'" data-p="'+k+'">'+BANDERAS[k]+'<span>'+PAISES[k].n+'</span></button>').join('')+'</div>'+
-    '<label class="f">Plataforma y plan</label>'+
-    '<div class="combo"><button type="button" class="combo-btn" id="plbtn" aria-haspopup="listbox" aria-expanded="false" '+((!S.pais||S.cargando||S.errLista)?'disabled':'')+'><span class="'+(S.plat?'':'ph')+'">'+esc(txtBtn)+'</span><span class="chev">▾</span></button>'+
-    '<div class="combo-panel" id="plpanel" hidden><input id="bq" class="combo-q" type="text" autocomplete="off" placeholder="Buscar plataforma" aria-label="Buscar plataforma"><div class="combo-list" id="cl" role="listbox"></div></div></div>'+
     (S.errLista?'<div class="err">'+esc(S.errLista)+'</div><button type="button" class="link" id="reintentar" style="margin-top:4px">Reintentar</button>':'')+
     '<div class="spacer"></div><button class="btn" id="next" '+(ok?'':'disabled')+'>Continuar</button><button class="link" id="back">Volver</button>';
-  const em=document.getElementById('em');em.oninput=()=>{S.email=em.value;document.getElementById('next').disabled=!(emailOk(S.email)&&S.pais&&S.plat)};
-  app.querySelectorAll('.pais').forEach(b=>b.onclick=()=>{S.pais=b.dataset.p;S.plat=null;S.precio='';S.busca='';S.errLista='';if(S.lista[S.pais])render();else cargarLista(S.pais)});
-  const btn=document.getElementById('plbtn'),panel=document.getElementById('plpanel'),bq=document.getElementById('bq');
-  btn.onclick=()=>{
-    if(S.abierto){cerrarCombo();return}
-    S.abierto=true;S.busca='';S.act=0;panel.hidden=false;btn.setAttribute('aria-expanded','true');bq.value='';pintarLista();bq.focus();
-  };
-  bq.oninput=()=>{S.busca=bq.value;S.act=0;pintarLista()};
-  bq.onkeydown=e=>{
-    const ver=()=>{pintarLista();const a=document.querySelector('.combo-opt.act');if(a&&a.scrollIntoView)a.scrollIntoView({block:'nearest'})};
-    if(e.key==='ArrowDown'){e.preventDefault();S.act=Math.min(S.act+1,S.vis.length-1);ver()}
-    else if(e.key==='ArrowUp'){e.preventDefault();S.act=Math.max(S.act-1,0);ver()}
-    else if(e.key==='Enter'){e.preventDefault();elegir(S.vis[S.act])}
-    else if(e.key==='Escape'){cerrarCombo();btn.focus()}
-  };
+  const em=document.getElementById('em');em.oninput=()=>{S.email=em.value;document.getElementById('next').disabled=!(emailOk(S.email)&&S.pais)};
+  app.querySelectorAll('.pais').forEach(b=>b.onclick=()=>{S.pais=b.dataset.p;S.plat=null;S.precio='';S.busca='';S.act=0;S.errLista='';if(S.lista[S.pais])render();else cargarLista(S.pais)});
   const re=document.getElementById('reintentar');if(re)re.onclick=()=>cargarLista(S.pais);
   document.getElementById('next').onclick=()=>go(2);
   document.getElementById('back').onclick=()=>go(0);
+}
+function pasoBuscar(){
+  if(!S.lista[S.pais]&&!S.cargando&&!S.errLista){cargarLista(S.pais);return}
+  app.innerHTML=enc(3)+'<h1>¿De qué plataforma?</h1><p class="sub">Buscá el plan que te cobra de más en '+PAISES[S.pais].n+'.</p>'+
+    '<input id="bq" class="busca" type="text" autocomplete="off" placeholder="Buscar, por ejemplo Netflix" value="'+esc(S.busca)+'" aria-label="Buscar plataforma">'+
+    '<div class="res" id="res" role="listbox">'+(S.cargando?'<div class="res-vacio">Cargando plataformas…</div>':'')+'</div>'+
+    (S.errLista?'<div class="err">'+esc(S.errLista)+'</div><button type="button" class="link" id="reintentar" style="margin-top:4px">Reintentar</button>':'')+
+    '<div class="spacer"></div><button class="btn" id="next" '+(S.plat?'':'disabled')+'>Continuar</button><button class="link" id="back">Volver</button>';
+  if(!S.cargando&&!S.errLista)pintarResultados();
+  const bq=document.getElementById('bq');
+  bq.oninput=()=>{S.busca=bq.value;S.act=0;pintarResultados()};
+  bq.onkeydown=e=>{
+    const ver=()=>{pintarResultados();const a=document.querySelector('.res-opt.act');if(a&&a.scrollIntoView)a.scrollIntoView({block:'nearest'})};
+    if(e.key==='ArrowDown'){e.preventDefault();S.act=Math.min(S.act+1,S.vis.length-1);ver()}
+    else if(e.key==='ArrowUp'){e.preventDefault();S.act=Math.max(S.act-1,0);ver()}
+    else if(e.key==='Enter'){e.preventDefault();if(S.vis[S.act]){S.plat=S.vis[S.act];go(3)}}
+  };
+  const re=document.getElementById('reintentar');if(re)re.onclick=()=>cargarLista(S.pais);
+  document.getElementById('next').onclick=()=>go(3);
+  document.getElementById('back').onclick=()=>go(1);
+  bq.focus();
 }
 
 function limpiarDec(v){let o='',sep=false;for(const ch of v){if(/\d/.test(ch))o+=ch;else if((ch==='.'||ch===',')&&!sep){o+=ch;sep=true}}return o}
@@ -231,14 +246,13 @@ function calc(){
 }
 function pasoDatos(){
   const c=calc(),P=c.P;
-  app.innerHTML=enc(3)+'<h1>Datos del aumento</h1><p class="sub">Contanos cuánto pasó a cobrar la plataforma.</p>'+
-    '<label class="f">Plan</label><div class="ro"><div class="bd">'+BANDERAS[S.pais]+esc(S.plat.plataforma)+' · '+P.n+'</div></div>'+
-    (S.pais!=='ar'?'<label class="f">Precio de plataforma registrado en Lank</label><div class="ro">'+fmt(S.plat.precio_original,S.pais)+'<span>no editable</span></div>':'')+
+  app.innerHTML=enc(4)+'<h1>Datos del aumento</h1><p class="sub">Contanos cuánto pasó a cobrar la plataforma.</p>'+
+    '<div class="resumen"><div class="bd">'+BANDERAS[S.pais]+'<b>'+esc(S.plat.plataforma)+'</b></div><div class="rs-l">Precio actual de la plataforma en Lank'+(S.pais==='ar'?' (con impuestos)':'')+'</div><div class="rs-v">'+fmt(S.plat.precio_original,S.pais)+'</div></div>'+
     '<label class="f" for="pr">Precio nuevo de la plataforma ('+P.m+')</label><input id="pr" type="text" inputmode="'+(P.dec?'decimal':'numeric')+'" value="'+esc(S.precio)+'" placeholder="'+(P.dec?'Ej: 199,50':'Ej: 6299')+'">'+
     (c.txt?'<div class="var '+c.txt[0]+'">'+esc(c.txt[1])+'</div>':'')+
     (c.estado==='coment'?'<label class="f" for="co">Comentario</label><textarea id="co" placeholder="¿De dónde sale este precio?">'+esc(S.comentario)+'</textarea>':'')+
-    '<div class="row"><div><label class="f" for="fe">Fecha del aumento (opcional)</label><input id="fe" type="date" value="'+esc(S.fecha)+'"></div>'+
-    '<div><label class="f" for="ca">Captura</label><input id="ca" type="file" accept="image/*,application/pdf" style="font-size:12px;max-width:100%"></div></div>'+
+    '<label class="f" for="fe">Fecha del aumento (opcional)</label><input id="fe" type="date" value="'+esc(S.fecha)+'">'+
+    '<label class="f">Captura</label><label class="file" for="ca"><input id="ca" type="file" accept="image/*,application/pdf"><span class="file-btn">Elegir archivo</span><span class="file-name'+(S.archivo?' has':'')+'">'+(S.archivo?esc(S.archivo.name):'Ningún archivo seleccionado')+'</span></label>'+
     (S.fecha&&!c.fechaOk?'<div class="err">La fecha tiene que estar entre 60 días atrás y 90 días adelante.</div>':'')+
     (S.archivo?'<div class="hint">✓ '+esc(S.archivo.name)+'</div>':'<div class="hint">Una captura de pantalla donde se vea el nuevo precio (máx. 5 MB).</div>')+
     '<label class="f" for="li">Link a la fuente oficial (opcional)</label><input id="li" type="text" inputmode="url" value="'+esc(S.link)+'" placeholder="https://">'+
@@ -256,7 +270,7 @@ function pasoDatos(){
   document.getElementById('hp').oninput=e=>{S.hp=e.target.value};
   document.getElementById('cf').onchange=e=>{S.confirmo=e.target.checked;render()};
   document.getElementById('next').onclick=enviar;
-  document.getElementById('back').onclick=()=>go(1);
+  document.getElementById('back').onclick=()=>go(2);
 }
 
 function mensajeError(e){
@@ -273,7 +287,7 @@ function mensajeError(e){
 }
 async function enviar(){
   const c=calc();if(!c.ok)return;
-  if(S.hp){S.paso=3;render();return}
+  if(S.hp){S.paso=4;render();return}
   S.enviando=true;S.error='';render();
   try{
     const f=new FormData();
@@ -283,18 +297,18 @@ async function enviar(){
     f.set('fuente_url',S.link||'');f.set('comentario',S.comentario.trim());
     f.set('captura',S.archivo);
     await api('',{method:'POST',body:f});
-    S.enviando=false;S.paso=3;render();window.scrollTo(0,0);
+    S.enviando=false;S.paso=4;render();window.scrollTo(0,0);
   }catch(e){S.enviando=false;S.error=mensajeError(e);render()}
 }
 
 function pasoListo(){
-  app.innerHTML=enc(3)+'<div class="done"><div class="ic">✓</div><h1>¡Gracias! Recibimos tu reporte</h1><p class="sub">Vamos a revisar el aumento de '+esc(S.plat?S.plat.plataforma:'tu plataforma')+'.</p></div>'+
+  app.innerHTML=enc(4)+'<div class="done"><div class="ic">✓</div><h1>¡Gracias! Recibimos tu reporte</h1><p class="sub">Vamos a revisar el aumento de '+esc(S.plat?S.plat.plataforma:'tu plataforma')+'.</p></div>'+
     '<div class="track"><div class="on">Recibido</div><div>En revisión</div><div>Resuelto</div></div>'+
     '<div class="note" style="text-align:center;margin-top:18px">Te avisamos por email'+(S.email?' a '+esc(S.email.trim()):'')+' cuando el pedido se resuelva.</div>'+
     '<div class="spacer"></div><button class="btn" id="next">Reportar otro</button>';
   document.getElementById('next').onclick=()=>{const l=S.lista;Object.assign(S,{paso:0,motivo:null,plat:null,precio:'',fecha:'',archivo:null,link:'',comentario:'',confirmo:false,error:'',hp:'',busca:'',lista:l});render()};
 }
-function render(){[pasoMotivo,pasoPlataforma,pasoDatos,pasoListo][S.paso]()}
+function render(){[pasoMotivo,pasoPais,pasoBuscar,pasoDatos,pasoListo][S.paso]()}
 render();
 </script>
 </body>
